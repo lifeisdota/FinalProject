@@ -8,38 +8,82 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 /**
- * MainActivity is called when the app first launches.
- * It corresponds to activity_main.xml
+ * ViewListActivity class that extends AppCompatActivity and implements
+ * NavigationView.OnNavigationItemSelectedListener.
+ * This class helps display a favourited image as well as its details.
  */
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class ViewListActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    DrawerLayout drawer = null;
+    // Global variables set here to be accessible anywhere in the class.
+    String date = null;
+    String longitude = null;
+    String latitude = null;
+    String imageName = null;
 
     /**
-     * onCreate is called when MainActivity is created
+     * onCreate is called when ViewListActivity is created
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_view_list);
+
+        // Checking if an intent was passed from the previous activity.
+        if (getIntent().getExtras() != null) {
+            // If there was an intent passed, we get the data from the intent.
+            Intent intent = getIntent();
+            date = intent.getExtras().getString("date");
+            longitude = intent.getExtras().getString("longitude");
+            latitude = intent.getExtras().getString("latitude");
+            imageName = intent.getExtras().getString("image_name");
+
+            // Creating a TextView object called detailsText so we can set the text
+            // of the 'details_text' TextView
+            TextView detailsText = (TextView) findViewById(R.id.details_text);
+
+            // Setting the text with the information we got from the intent.
+            detailsText.setText("Date: " + date + "\nLongitude: " + longitude + "\nLatitude: " + latitude);
+
+            // Getting the image from storage using the imageName that was passed
+            // in the intent.
+            File imgFile = new File (getFilesDir(), imageName);
+
+            // Checking if the image exists.
+            if (imgFile.exists()) {
+                //If it does exist, creating a Bitmap image from it.
+                Bitmap bitmapImage = null;
+                try {
+                    bitmapImage = BitmapFactory.decodeStream(new FileInputStream(imgFile));
+                } catch (FileNotFoundException e) {
+                    Log.i("ERROR", e.toString());
+                }
+
+                // Adding the image to the view.
+                ImageView imageView = (ImageView) findViewById(R.id.image);
+                imageView.setImageBitmap(bitmapImage);
+            }
+        }
+
+        // Calling the setListeners function to make sure we are listening for input.
+        setListeners();
 
         // Creating a toolbar object and adding setting it as a action bar.
         Toolbar mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -65,68 +109,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Setting the actionBar title.
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(activityName + " - " + versionName);
-
-        // Getting the users name from shared preferences, if nothing is stored,
-        // setting the String "usersName" to an empty string.
-        SharedPreferences prefs = getSharedPreferences("editor", MODE_PRIVATE);
-        String usersName = prefs.getString("usersName", "");
-
-        // Adding the users name to the display.
-        TextView textView = (TextView)findViewById(R.id.name_goes_here);
-        String greeting = this.getResources().getString(R.string.hi);
-        textView.setText(greeting + " " + usersName + "!");
-
-        if(usersName != "") {
-            textView.setVisibility(View.VISIBLE);
-        }
-
-        // Calling the setListeners function to make sure we are listening for input.
-        setListeners();
     }
 
     /**
      * setListeners called from onCreate.
-     * Creates onClickListeners to move to different activities.
+     * Creates an onClickListener to change Activites if the 'back_button' is clicked.
      */
     private void setListeners() {
-        findViewById(R.id.home_screen_button)
+        findViewById(R.id.button_back)
                 .setOnClickListener(v ->
                         startActivity(
-                                new Intent(MainActivity.this, EnterDataActivity.class)
+                                new Intent(ViewListActivity.this, ListActivity.class)
                         )
-                );
-
-        findViewById(R.id.see_favourites)
-                .setOnClickListener(v ->
-                        startActivity(
-                                new Intent(MainActivity.this, ListActivity.class)
-                        )
-                );
-
-        findViewById(R.id.enter_name)
-                .setOnClickListener(v -> {
-
-                            // Getting the text from the EditText view.
-                            final EditText usersNameField =  (EditText) findViewById(R.id.usersName);
-                            final String usersName = usersNameField.getText().toString();
-
-                            // Saving the name to shared preferences.
-                            SharedPreferences.Editor editor = getSharedPreferences("editor", MODE_PRIVATE).edit();
-                            editor.putString("usersName", usersName);
-                            editor.apply();
-
-                            // Creating a SnackBar to notify the user that we have received
-                            // the name they entered.
-                            View parentLayout = findViewById(android.R.id.content);
-                            Snackbar snackbar = Snackbar.make(parentLayout, R.string.remember, Snackbar.LENGTH_LONG);
-                            snackbar.setAction("CLOSE", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    snackbar.dismiss();
-                                }
-                            });
-                            snackbar.show();
-                        }
                 );
     }
 
@@ -149,7 +143,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(item.getItemId() == R.id.help_item) {
             new AlertDialog.Builder(this)
                     .setTitle("How to use this page:")
-                    .setMessage("Click one of the buttons to navigate to the desired page.")
+                    .setMessage("If you accessed this page from the navigation drawer, not much will be available. Try accessing this page from " +
+                            "the ListActivity page. Here you will see an image of the earth of the coordinates originally entered when you favourited " +
+                            "the image, as well as the date the image was taken and coordinates of the image. Click 'back' to go back t the ListActivity page.")
                     .show();
         }
 

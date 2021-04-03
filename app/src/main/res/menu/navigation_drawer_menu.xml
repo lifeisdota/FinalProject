@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_drawer_menu">
+
+    <item android:id="@+id/main_activity_option"
+        android:title="MainActivity"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/enter_data_activity_option"
+        android:title="EnterDataActivity"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/image_activity_option"
+        android:title="ImageActivity"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/list_activity_option"
+        android:title="ListActivity"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/view_list_activity_option"
+        android:title="ViewListActivity"
+        app:showAsAction="never" />
+
+</menu>

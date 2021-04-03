@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Imagerie de la Terre de la NASA</string>
+    <string name="greeting">Bienvenue dans notre projet de base de données d\'imagerie terrestre de la NASA!</string>
+    <string name="see_the_earth">Voyez la Terre!</string>
+    <string name="home_screen_button">Cliquez ici pour voir la Terre</string>
+    <string name="enter_data_explain">Entrez la longitude et la latitude ci-dessous pour voir une image de la terre à ces coordonnées.</string>
+    <string name="enter_latitude">Latitude:</string>
+    <string name="enter_longitude">Longitude:</string>
+    <string name="enter">Entrer</string>
+    <string name="error_report">Erreur: un problème est survenu lors du téléchargement de l\'image. Cela est probablement dû aux coordonnées que vous avez entrées. Essayez de saisir des coordonnées comprises entre la plage acceptable.
+    Cela peut également être dû à un problème avec Internet. Consultez les journaux pour plus d\'informations.</string>
+    <string name="error_button_back">Retourner</string>
+    <string name="add_to_favourites">Ajouter aux Favoris!</string>
+    <string name="see_favourites">Voir les favoris</string>
+    <string name="notify">Nous chargeons l\'image maintenant.</string>
+    <string name="open">OUVERT</string>
+    <string name="close">FERMER</string>
+    <string name="help">Aider</string>
+    <string name="delete">Voulez-vous supprimer ceci?</string>
+    <string name="image">L\'image sélectionnée est:</string>
+    <string name="database">L\'identifiant de la base de données est:</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    <string name="enter_name">Entrez votre nom! Je vais le sauvegarder en utilisant les préférences partagées pour plus tard!</string>
+    <string name="hi">Salut</string>
+    <string name="remember">Je m\'en souviendrai pour la prochaine fois!</string>
+</resources>

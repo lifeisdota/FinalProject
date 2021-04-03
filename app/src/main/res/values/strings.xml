@@ -1,3 +1,27 @@
 <resources>
-    <string name="app_name">FinalProject</string>
+    <string name="app_name">NASA Earth Imagery</string>
+    <string name="greeting">Welcome to our NASA Earth Imagery Database Project!</string>
+    <string name="see_the_earth">See the Earth!</string>
+    <string name="home_screen_button">Click Here to see the Earth</string>
+    <string name="enter_data_explain">Enter the longitude and latitude below to see an image of the earth at those coordinates.</string>
+    <string name="enter_latitude">Latitude:</string>
+    <string name="enter_longitude">Longitude:</string>
+    <string name="enter">Enter</string>
+    <string name="error_report">Error: Something went wrong with downloading the image. This is likely due to the coordinates you entered. Try entering coordinates between the acceptable range.
+    It might also be due to a problem with the internet. Check the logs for more information.</string>
+    <string name="error_button_back">Go Back</string>
+    <string name="add_to_favourites">Add to Favourites!</string>
+    <string name="see_favourites">See Favourites</string>
+    <string name="notify">We\'re loading the image now.</string>
+    <string name="open">OPEN</string>
+    <string name="close">CLOSE</string>
+    <string name="help">Help</string>
+    <string name="delete">Do you want to delete this?</string>
+    <string name="image">The selected image is:</string>
+    <string name="database">The id of the database is:</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="enter_name">Enter your name! I\'ll save it using shared preferences for later!</string>
+    <string name="hi">Hi</string>
+    <string name="remember">I\'ll remember that for next time!</string>
 </resources>

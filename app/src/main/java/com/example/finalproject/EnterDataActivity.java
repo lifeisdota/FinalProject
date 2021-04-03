@@ -8,38 +8,46 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 /**
- * MainActivity is called when the app first launches.
- * It corresponds to activity_main.xml
+ * EnterDataActivity corresponds to activity_enter_data.xml
  */
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    DrawerLayout drawer = null;
+public class EnterDataActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     /**
-     * onCreate is called when MainActivity is created
+     * onCreate method called when EnterDataActivity is created
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_enter_data);
+
+        // Creating a SnackBar to be displayed when this Activity is shown.
+        View parentLayout = findViewById(android.R.id.content);
+        Snackbar snackbar = Snackbar.make(parentLayout, "Make sure to enter acceptable coordinates!", Snackbar.LENGTH_LONG);
+
+        // Setting an action to dismiss the SnackBar.
+        snackbar.setAction("CLOSE", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                snackbar.dismiss();
+            }
+        });
+
+        // Setting the SnackBar to show right when the activity is launched.
+        snackbar.show();
+
+        // Calling the setListeners function to make sure we are listening for input.
+        setListeners();
 
         // Creating a toolbar object and adding setting it as a action bar.
         Toolbar mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -65,68 +73,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Setting the actionBar title.
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(activityName + " - " + versionName);
-
-        // Getting the users name from shared preferences, if nothing is stored,
-        // setting the String "usersName" to an empty string.
-        SharedPreferences prefs = getSharedPreferences("editor", MODE_PRIVATE);
-        String usersName = prefs.getString("usersName", "");
-
-        // Adding the users name to the display.
-        TextView textView = (TextView)findViewById(R.id.name_goes_here);
-        String greeting = this.getResources().getString(R.string.hi);
-        textView.setText(greeting + " " + usersName + "!");
-
-        if(usersName != "") {
-            textView.setVisibility(View.VISIBLE);
-        }
-
-        // Calling the setListeners function to make sure we are listening for input.
-        setListeners();
     }
 
     /**
      * setListeners called from onCreate.
-     * Creates onClickListeners to move to different activities.
+     * Creates onClickListeners to do various things.
      */
     private void setListeners() {
-        findViewById(R.id.home_screen_button)
+        findViewById(R.id.see_the_earth_enter)
                 .setOnClickListener(v ->
-                        startActivity(
-                                new Intent(MainActivity.this, EnterDataActivity.class)
-                        )
+                        sendUrl()
                 );
 
         findViewById(R.id.see_favourites)
                 .setOnClickListener(v ->
                         startActivity(
-                                new Intent(MainActivity.this, ListActivity.class)
+                                new Intent(EnterDataActivity.this, ListActivity.class)
                         )
-                );
-
-        findViewById(R.id.enter_name)
-                .setOnClickListener(v -> {
-
-                            // Getting the text from the EditText view.
-                            final EditText usersNameField =  (EditText) findViewById(R.id.usersName);
-                            final String usersName = usersNameField.getText().toString();
-
-                            // Saving the name to shared preferences.
-                            SharedPreferences.Editor editor = getSharedPreferences("editor", MODE_PRIVATE).edit();
-                            editor.putString("usersName", usersName);
-                            editor.apply();
-
-                            // Creating a SnackBar to notify the user that we have received
-                            // the name they entered.
-                            View parentLayout = findViewById(android.R.id.content);
-                            Snackbar snackbar = Snackbar.make(parentLayout, R.string.remember, Snackbar.LENGTH_LONG);
-                            snackbar.setAction("CLOSE", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    snackbar.dismiss();
-                                }
-                            });
-                            snackbar.show();
-                        }
                 );
     }
 
@@ -149,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(item.getItemId() == R.id.help_item) {
             new AlertDialog.Builder(this)
                     .setTitle("How to use this page:")
-                    .setMessage("Click one of the buttons to navigate to the desired page.")
+                    .setMessage("Enter a longitude and latitude and click enter to see the an image of the earth at those coordinates. Alternatively, click 'see favourites' to see a list of the items you have favourited.")
                     .show();
         }
 
@@ -192,5 +155,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.closeDrawer(GravityCompat.START);
 
         return false;
+    }
+
+    /**
+     * sendUrl method called from setListeners() when the user clicks "see_the_earth_enter" button
+     */
+    private void sendUrl() {
+
+        // Getting the input for longitude
+        final EditText longitudeField =  (EditText) findViewById(R.id.longitude_edit_text);
+        final String longitude = longitudeField.getText().toString();
+
+        // Getting the input for latitude
+        final EditText latitudeField =  (EditText) findViewById(R.id.latitude_edit_text);
+        final String latitude = latitudeField.getText().toString();
+
+        // creating the url string with the longitude and latitude variables
+        final String url = "https://api.nasa.gov/planetary/earth/imagery?lon=" + longitude + "&lat=" + latitude + "&date=2014-02-01&api_key=DEMO_KEY";
+
+        // Creating an intent, adding information to the intent, and calling startActivity to pass the information
+        // and transfer to the ImageActivity class.
+        Intent i = new Intent(EnterDataActivity.this, ImageActivity.class);
+        i.putExtra("url", url);
+        i.putExtra("longitude", longitude);
+        i.putExtra("latitude", latitude);
+        startActivity(i);
     }
 }
