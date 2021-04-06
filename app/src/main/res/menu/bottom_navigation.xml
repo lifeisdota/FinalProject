@@ -7,11 +7,7 @@
 
     <item
         android:id="@id/nav_favorites"
-        android:icon="@drawable/ic_baseline_favorite_24"
-        android:title="Home" />
+        android:icon="@drawable/ic_baseline_android_24"
+        android:title="App" />
 
-    <item
-        android:id="@id/nav_search"
-        android:icon="@drawable/ic_baseline_search_24"
-        android:title="Home" />
 </menu>
